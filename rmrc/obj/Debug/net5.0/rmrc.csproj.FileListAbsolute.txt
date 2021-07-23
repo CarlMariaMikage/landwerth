@@ -1,0 +1,16 @@
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.exe
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.deps.json
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.runtimeconfig.json
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.runtimeconfig.dev.json
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.dll
+C:\rilke\rmrc\bin\Debug\net5.0\ref\rmrc.dll
+C:\rilke\rmrc\bin\Debug\net5.0\rmrc.pdb
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.csproj.AssemblyReference.cache
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.GeneratedMSBuildEditorConfig.editorconfig
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.AssemblyInfoInputs.cache
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.AssemblyInfo.cs
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.csproj.CoreCompileInputs.cache
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.dll
+C:\rilke\rmrc\obj\Debug\net5.0\ref\rmrc.dll
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.pdb
+C:\rilke\rmrc\obj\Debug\net5.0\rmrc.genruntimeconfig.cache
