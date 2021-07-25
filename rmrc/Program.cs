@@ -17,23 +17,43 @@ namespace rmrc
                     return;
                 
                 var parser = new Parser(line);
-                var expression = parser.Parse();
+                var syntaxTree = parser.Parse();
 
                 var colour = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Display(expression);
+                Display(syntaxTree.Root);
                 Console.ForegroundColor = colour;
+
+                if (!syntaxTree.Diagnostics.Any())
+                {
+                    var e = new Evaluator(syntaxTree.Root);
+                    var result = e.Evaluate();
+                    Console.WriteLine(result);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
+                    foreach (var diagnostics in syntaxTree.Diagnostics)
+                        Console.WriteLine(diagnostics);
+
+                    Console.ForegroundColor = colour;
+                }
             }
         }
 
-        static void Display(SyntaxNode node, String indent = "", bool isLast = false)
+        static void Display(SyntaxNode node, String indent = "", bool isLast = true)
         {
             /**
             ├──
             │
             └──
             **/
+            
+            var marker = (isLast) ? "└──" : "├──";
+
             Console.Write(indent);
+            Console.Write(marker);
             Console.Write(node.Type);
 
             if((node is SyntaxToken t) && (t.Value != null))
@@ -44,12 +64,12 @@ namespace rmrc
 
             Console.WriteLine();
 
-            indent += (isLast) ? "└──" : "├──";
+            indent += (isLast) ? "\t" : "│   ";
 
             var lastChild = node.GetChildren().LastOrDefault();
 
             foreach (var child in node.GetChildren())
-                Display(child, indent, node == lastChild);
+                Display(child, indent, child == lastChild);
         }
     }
 
@@ -95,11 +115,14 @@ namespace rmrc
     {
         private readonly string txt;
         private int pos;
+        private List<string> diagnostics = new List<string>();
 
         public Lexer(String text) 
         {
             txt = text;
         }
+
+        public IEnumerable<string> Diagnostics => diagnostics;
 
         private char Current
         {
@@ -119,7 +142,7 @@ namespace rmrc
         public SyntaxToken NextToken() 
         {
             //<numbers>
-            //+ - * / % ( )
+            //+ - . / % ( )
             //<whitespace>
 
             if(pos >= txt.Length)
@@ -136,7 +159,9 @@ namespace rmrc
 
                 var l = pos - s;
                 var text = txt.Substring(s, l);
-                int.TryParse(text, out var value);
+                if(!int.TryParse(text, out var value))
+                    diagnostics.Add($"The number {txt} is not a valid Int32.");
+
                 return new SyntaxToken(SyntaxType.Number, s, text, value);
             }
 
@@ -159,8 +184,8 @@ namespace rmrc
                     return new SyntaxToken(SyntaxType.PlusOperator, pos++, "+", null);
                 case '-' :
                     return new SyntaxToken(SyntaxType.MinusOperator, pos++, "-", null);
-                case '*' :
-                    return new SyntaxToken(SyntaxType.TimesOperator, pos++, "*", null);
+                case '.' :
+                    return new SyntaxToken(SyntaxType.TimesOperator, pos++, ".", null);
                 case '/' :
                     return new SyntaxToken(SyntaxType.SlashOperator, pos++, "/", null);
                 case '%' :
@@ -170,6 +195,7 @@ namespace rmrc
                 case ')' :
                     return new SyntaxToken(SyntaxType.CloseBracketsOperator, pos++, ")", null);
                 default:
+                    diagnostics.Add($"Alert: Undefined token input: '{Current}'");
                     return new SyntaxToken(SyntaxType.UndefinedToken, pos++, txt.Substring(pos - 1, 1), null);
             }
             
@@ -226,9 +252,24 @@ namespace rmrc
         }
     }
 
+    sealed class SyntaxTree 
+    {
+        public SyntaxTree(IEnumerable<string> diagnostics, SyntaxExpression root, SyntaxToken endOfFile) 
+        {
+            Diagnostics = diagnostics.ToArray();
+            Root = root;
+            EndOfFile = endOfFile;
+        }
+
+        public IReadOnlyList<string> Diagnostics { get; }
+        public SyntaxExpression Root { get; }
+        public SyntaxToken EndOfFile { get; }
+    }
     class Parser 
     {
         private readonly SyntaxToken[] tkns;
+
+        private List<string> diagnostics = new List<string>();
         private int pos;
 
         public Parser(string text)
@@ -249,7 +290,10 @@ namespace rmrc
             } while (token.Type != SyntaxType.EndOfFile);
 
             tkns = tokens.ToArray();
+            diagnostics.AddRange(lexer.Diagnostics);
         }
+
+        public IEnumerable<string> Diagnostics => diagnostics;
 
         private SyntaxToken LookAhead(int off)
         {
@@ -271,16 +315,24 @@ namespace rmrc
             if(Current.Type == type)
                 return NextToken();
             
+            diagnostics.Add($"Alert: Unprecedented token <{Current.Type}>, expected <{type}>");
             return new SyntaxToken(type, Current.Position, null, null);
         }
 
         private SyntaxToken Current => LookAhead(0);
 
-        public SyntaxExpression Parse()
+        public SyntaxTree Parse()
+        {
+            var expr = ParseExpression();
+            var endOfFile = Check(SyntaxType.EndOfFile);
+            return new SyntaxTree(diagnostics, expr, endOfFile);
+        }
+
+        private SyntaxExpression ParseExpression()
         {
             var left = ParsePrimaryExpression();
 
-            while((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator)) 
+            while ((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator))
             {
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
@@ -294,6 +346,51 @@ namespace rmrc
         {
             var numberToken = Check(SyntaxType.Number);
             return new SyntaxNumber(numberToken);
+        }
+    }
+
+    class Evaluator
+    {
+        private readonly SyntaxExpression rt;
+
+        public Evaluator(SyntaxExpression root)
+        {
+            rt = root;
+        }
+
+        public int Evaluate()
+        {
+            return EvaluateExpression(rt);
+        }
+
+        private int EvaluateExpression(SyntaxExpression root)
+        {
+            if(root is SyntaxNumber n)
+                return (int) n.NumberToken.Value;
+            
+            if(root is SyntaxBinary b)
+            {
+                var left = EvaluateExpression(b.Left);
+                var right = EvaluateExpression(b.Right);
+
+                switch(b.OperatorToken.Type)
+                {
+                    case SyntaxType.PlusOperator :
+                        return left + right;
+                    case SyntaxType.MinusOperator :
+                        return left - right;
+                    case SyntaxType.TimesOperator :
+                        return left * right;
+                    case SyntaxType.SlashOperator :
+                        return left / right;
+                    case SyntaxType.ModOperator :
+                        return left % right;
+                    default :
+                        throw new Exception($"Unprecedented binary operator {b.OperatorToken.Type}.");
+                }
+            }
+
+            throw new Exception($"Unprecedented node {root.Type}.");
         }
     }
 }
