@@ -44,11 +44,6 @@ namespace rmrc
 
         static void Display(SyntaxNode node, String indent = "", bool isLast = true)
         {
-            /**
-            ├──
-            │
-            └──
-            **/
             
             var marker = (isLast) ? "└──" : "├──";
 
@@ -87,7 +82,8 @@ namespace rmrc
         UndefinedToken,
         EndOfFile,
         NumberExpression,
-        BinaryExpression
+        BinaryExpression,
+        BracketsExpression
     }
 
     class SyntaxToken : SyntaxNode
@@ -252,6 +248,28 @@ namespace rmrc
         }
     }
 
+    sealed class SyntaxBrackets : SyntaxExpression
+    {
+        public SyntaxBrackets(SyntaxToken openBracketsOperator, SyntaxExpression expression, SyntaxToken closeBracketsOperator)
+        {
+            OpenBracketsOperator = openBracketsOperator;
+            Expression = expression;
+            CloseBracketsOperator = closeBracketsOperator;
+        }
+
+        public override SyntaxType Type => SyntaxType.BracketsExpression;
+        public SyntaxToken OpenBracketsOperator { get; }
+        public SyntaxExpression Expression { get; }
+        public SyntaxToken CloseBracketsOperator { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return OpenBracketsOperator;
+            yield return Expression;
+            yield return CloseBracketsOperator;
+        }
+    }
+
     sealed class SyntaxTree 
     {
         public SyntaxTree(IEnumerable<string> diagnostics, SyntaxExpression root, SyntaxToken endOfFile) 
@@ -322,6 +340,11 @@ namespace rmrc
 
         private SyntaxToken Current => LookAhead(0);
 
+        private SyntaxExpression ParseExpression()
+        {
+            return ParseTerm();
+        }
+
         public SyntaxTree Parse()
         {
             var expr = ParseTerm();
@@ -359,6 +382,14 @@ namespace rmrc
 
         private SyntaxExpression ParsePrimaryExpression()
         {
+            if(Current.Type == SyntaxType.OpenBracketsOperator)
+            {
+                var left = NextToken();
+                var expression = ParseExpression();
+                var right = Check(SyntaxType.CloseBracketsOperator);
+                return new SyntaxBrackets(left, expression, right);
+            }
+
             var numberToken = Check(SyntaxType.Number);
             return new SyntaxNumber(numberToken);
         }
@@ -404,6 +435,9 @@ namespace rmrc
                         throw new Exception($"Unprecedented binary operator {b.OperatorToken.Type}.");
                 }
             }
+
+            if(root is SyntaxBrackets p)
+                return EvaluateExpression(p.Expression);
 
             throw new Exception($"Unprecedented node {root.Type}.");
         }
