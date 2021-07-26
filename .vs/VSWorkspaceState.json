@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\rmrc"
   ],
-  "SelectedNode": "\\.gitattributes",
+  "SelectedNode": "\\rmrc\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

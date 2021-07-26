@@ -20,7 +20,7 @@ namespace rmrc
                 var syntaxTree = parser.Parse();
 
                 var colour = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Display(syntaxTree.Root);
                 Console.ForegroundColor = colour;
 
