@@ -265,6 +265,7 @@ namespace rmrc
         public SyntaxExpression Root { get; }
         public SyntaxToken EndOfFile { get; }
     }
+    
     class Parser 
     {
         private readonly SyntaxToken[] tkns;
@@ -332,7 +333,8 @@ namespace rmrc
         {
             var left = ParsePrimaryExpression();
 
-            while ((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator))
+            while ((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator) || (Current.Type == SyntaxType.TimesOperator) 
+            || (Current.Type == SyntaxType.SlashOperator) || (Current.Type == SyntaxType.ModOperator))
             {
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
