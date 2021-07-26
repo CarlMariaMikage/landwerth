@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\rilke\\rmrc\\rmrc.csproj": {}
+    "C:\\rilke\\lc\\lc.csproj": {}
   },
   "projects": {
-    "C:\\rilke\\rmrc\\rmrc.csproj": {
+    "C:\\rilke\\lc\\lc.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\rilke\\rmrc\\rmrc.csproj",
-        "projectName": "rmrc",
-        "projectPath": "C:\\rilke\\rmrc\\rmrc.csproj",
+        "projectUniqueName": "C:\\rilke\\lc\\lc.csproj",
+        "projectName": "lc",
+        "projectPath": "C:\\rilke\\lc\\lc.csproj",
         "packagesPath": "C:\\Users\\shibu\\.nuget\\packages\\",
-        "outputPath": "C:\\rilke\\rmrc\\obj\\",
+        "outputPath": "C:\\rilke\\lc\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\shibu\\AppData\\Roaming\\NuGet\\NuGet.Config",

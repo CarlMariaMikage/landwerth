@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/rmrc/bin/Debug/net5.0/rmrc.dll",
+            "program": "${workspaceFolder}/lc/bin/Debug/net5.0/lc.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/rmrc",
+            "cwd": "${workspaceFolder}/lc",
             "console": "externalTerminal",
             "stopAtEntry": false
         },

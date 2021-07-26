@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "rmrc/1.0.0": {
+      "lc/1.0.0": {
         "runtime": {
-          "rmrc.dll": {}
+          "lc.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "rmrc/1.0.0": {
+    "lc/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

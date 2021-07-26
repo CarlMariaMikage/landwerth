@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace rmrc
+namespace lc
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Rainer Maria Rilke Compiler, Ausf. 0.0.0.1");
+            Console.WriteLine("Landwerth Compiler, Ausf. 0.0.0.1");
             while(true) 
             {
-                Console.Write("rmrc> ");
+                Console.Write("lc> ");
                 var line = Console.ReadLine();
                 if(string.IsNullOrWhiteSpace(line))
                     return;

@@ -1,0 +1,16 @@
+C:\rilke\lc\bin\Debug\net5.0\lc.exe
+C:\rilke\lc\bin\Debug\net5.0\lc.deps.json
+C:\rilke\lc\bin\Debug\net5.0\lc.runtimeconfig.json
+C:\rilke\lc\bin\Debug\net5.0\lc.runtimeconfig.dev.json
+C:\rilke\lc\bin\Debug\net5.0\lc.dll
+C:\rilke\lc\bin\Debug\net5.0\ref\lc.dll
+C:\rilke\lc\bin\Debug\net5.0\lc.pdb
+C:\rilke\lc\obj\Debug\net5.0\lc.csproj.AssemblyReference.cache
+C:\rilke\lc\obj\Debug\net5.0\lc.GeneratedMSBuildEditorConfig.editorconfig
+C:\rilke\lc\obj\Debug\net5.0\lc.AssemblyInfoInputs.cache
+C:\rilke\lc\obj\Debug\net5.0\lc.AssemblyInfo.cs
+C:\rilke\lc\obj\Debug\net5.0\lc.csproj.CoreCompileInputs.cache
+C:\rilke\lc\obj\Debug\net5.0\lc.dll
+C:\rilke\lc\obj\Debug\net5.0\ref\lc.dll
+C:\rilke\lc\obj\Debug\net5.0\lc.pdb
+C:\rilke\lc\obj\Debug\net5.0\lc.genruntimeconfig.cache
