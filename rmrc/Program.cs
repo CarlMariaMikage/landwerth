@@ -324,17 +324,30 @@ namespace rmrc
 
         public SyntaxTree Parse()
         {
-            var expr = ParseExpression();
+            var expr = ParseTerm();
             var endOfFile = Check(SyntaxType.EndOfFile);
             return new SyntaxTree(diagnostics, expr, endOfFile);
         }
 
-        private SyntaxExpression ParseExpression()
+        private SyntaxExpression ParseTerm()
+        {
+            var left = ParseFactor();
+
+            while ((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator))
+            {
+                var operatorToken = NextToken();
+                var right = ParseFactor();
+                left = new SyntaxBinary(left, operatorToken, right);
+            }
+
+            return left;
+        }
+
+        private SyntaxExpression ParseFactor()
         {
             var left = ParsePrimaryExpression();
 
-            while ((Current.Type == SyntaxType.PlusOperator) || (Current.Type == SyntaxType.MinusOperator) || (Current.Type == SyntaxType.TimesOperator) 
-            || (Current.Type == SyntaxType.SlashOperator) || (Current.Type == SyntaxType.ModOperator))
+            while ((Current.Type == SyntaxType.TimesOperator) || (Current.Type == SyntaxType.SlashOperator) || (Current.Type == SyntaxType.ModOperator))
             {
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
