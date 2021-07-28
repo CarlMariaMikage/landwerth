@@ -1,3 +1,3 @@
 # Landwerth
 
-Coming soon ;)
+A simple compiler. ;)
