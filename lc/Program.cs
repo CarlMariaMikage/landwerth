@@ -2,6 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 
+/**
+*   import java.util.Scanner;
+
+class Zigzag {
+	
+	void get() {
+		Scanner sc = new Scanner(System.in);
+		int r, c;
+		do {
+			System.out.println("Enter row & col");
+			r = sc.nextInt();
+			c = sc.nextInt();
+		} while (r <= 0 || c <= 0);
+		
+		int x[][] = new int[r][c];
+		
+		fill(x);
+		display(x);
+	}
+	
+	void fill(int Q[][]) {
+		int z = 1;
+		for(int i = 0; i < Q.length; i++) {
+			for(int j = 0; j < Q[0].length; j++, z++) {
+				if(i % 2 == 0)
+					Q[i][j] = z;
+				else
+					Q[i][Q[0].length - j - 1] = z;
+			}
+		}
+	}
+	
+	void display(int x[][]) {
+		System.out.println();
+		for(int h[] : x) {
+			for(int g : h) {
+				System.out.print(g + "\t");
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void main(String args[]) {
+		new Zigzag().get();
+	}
+}
+*/
+
 namespace lc
 {
     class Program
@@ -9,20 +57,30 @@ namespace lc
         static void Main(string[] args)
         {
             Console.WriteLine("Landwerth Compiler, Ausf. 0.0.0.1");
+            bool showTree = false;
             while(true) 
             {
                 Console.Write("lc> ");
                 var line = Console.ReadLine();
+                
                 if(string.IsNullOrWhiteSpace(line))
                     return;
                 
-                var parser = new Parser(line);
-                var syntaxTree = parser.Parse();
+                if(line == "#showTree") {
+                    showTree = !showTree;
+                    Console.WriteLine((showTree) ? "Parse tree viewing enabled." : "Parse tree viewing disabled.");
+                    continue;
+                }
 
-                var colour = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Display(syntaxTree.Root);
-                Console.ForegroundColor = colour;
+                var syntaxTree = SyntaxTree.Parse(line);
+
+                if(showTree) 
+                {
+                    var colour = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Display(syntaxTree.Root);
+                    Console.ForegroundColor = colour;
+                }
 
                 if (!syntaxTree.Diagnostics.Any())
                 {
@@ -32,6 +90,7 @@ namespace lc
                 }
                 else
                 {
+                    var colour = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
 
                     foreach (var diagnostics in syntaxTree.Diagnostics)
@@ -282,6 +341,12 @@ namespace lc
         public IReadOnlyList<string> Diagnostics { get; }
         public SyntaxExpression Root { get; }
         public SyntaxToken EndOfFile { get; }
+
+        public static SyntaxTree Parse(string text) 
+        {
+            var parser = new Parser(text);
+            return parser.Parse();
+        }
     }
     
     class Parser 
