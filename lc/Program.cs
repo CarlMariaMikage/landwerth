@@ -52,6 +52,86 @@ class Zigzag {
 }
 */
 
+/**
+import java.util.Scanner;
+
+class RotateMatrix {
+	
+	int[][] transpose(int[][] A, int n) {
+		int[][] B = new int[n][n];
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				B[i][j] = A[j][i];
+			}
+		}
+		return B;	
+	}
+
+	int[][] rotate90(int[][] A, int n) {
+		int[][] B = new int[n][n];
+		A = transpose(A, n);
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				B[i][j] = A[i][n-1-j];
+			}
+		}
+		return B;	
+	}
+
+	int[][] rotate180(int[][] A, int n) {
+		return rotate90(rotate90(A, n), n);
+	}
+
+	public static void main(String args[]) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int a[][] = new int[n][n];
+		for(int i = 0; i < n; i++) { 
+			for(int j = 0; j < n; j++) {
+				System.out.println("Enter element at (" + i + ", "  + j + ") :");
+				a[i][j] = sc.nextInt();
+			}
+		}
+		
+		int[][] matrix = new int[n][n];
+		
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				matrix[i][j] = a[i][j];
+			}
+		}
+		
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				System.out.print(matrix[i][j] + " ");
+			}
+			System.out.println();
+		}
+		
+		System.out.println("90 degrees rotation: ");
+
+		a = new RotateMatrix().rotate90(matrix, n);		
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				System.out.print(a[i][j] + " ");
+			}
+			System.out.println();
+		}
+
+		System.out.println("180 degrees rotation: ");
+	
+		matrix = new RotateMatrix().rotate180(matrix, n);		
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				System.out.print(matrix[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
+}
+
+**/
+
 namespace Landwerth
 {
     class Program
